@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mc-api-deployment
+  name: mc-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mc-api
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mc-api
+    spec:
+      containers:
+      - image: soyokaze0125/mc-api-x86:v1
+        imagePullPolicy: Always
+        name: mc-api
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  type: NodePort
+  selector:
+    app: mc-api
+  ports:
+      # デフォルトでは利便性のため、 `targetPort` は `port` と同じ値にセットされます。
+    - port: 80
+      targetPort: 8080
+      # 省略可能なフィールド
+      # デフォルトでは利便性のため、Kubernetesコントロールプレーンはある範囲から1つポートを割り当てます(デフォルト値の範囲:30000-32767)
+      nodePort: 30007
