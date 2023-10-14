@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sample-kubectl
+spec:
+  containers:
+  - name: kubectl-container
+    image: lachlanevenson/k8s-kubectl:v1.18.2
+    command: ["sleep", "86400"]
+    # volumeMounts:
+    # - name: token-vol
+    #   mountPath: "/service-account"
+    #   readOnly: true
+  serviceAccountName: mc-api-serviceacccount
+  # automountServiceAccountToken: true
+  # volumes:
+  # - name: token-vol
+  #   projected:
+  #     sources:
+  #     - serviceAccountToken:
+  #         audience: api
+  #         expirationSeconds: 3600
+  #         path: token

@@ -1,28 +1,48 @@
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
-  namespace: default
-  name: pod-reader
+  name: mc-api-clusterrole
 rules:
-- apiGroups: ["*"] # "" はコアのAPIグループを示します
-  resources: ["*"]
+- apiGroups: ["agones.dev","v1",""] # "" はコアのAPIグループを示します
+  resources: ["gameservers","pods"]
   verbs: ["*"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 # このRoleBindingは「jane」にNamespace「default」のポッドの読み取りを許可する
 # そのNamespaceでRole「pod-reader」を既に持っている必要があります。
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
   name: read-pods
   namespace: default
 subjects:
 # 一つ以上の「subject」を指定する必要があります
-- kind: User
-  name: jane # 「name」は大文字と小文字が区別されます
-  apiGroup: rbac.authorization.k8s.io
+- kind: ServiceAccount
+  # name: mc-api-serviceacccount # 「name」は大文字と小文字が区別されます
+  name: mc-api-serviceacccount # 「name」は大文字と小文字が区別されます
+  namespace: default
 roleRef:
-  # 「roleRef」はRole/ClusterRoleへのバインドを指定します
-  kind: Role #RoleまたはClusterRoleである必要があります
-  name: pod-reader # これはバインドしたいRole名またはClusterRole名とマッチする必要があります
   apiGroup: rbac.authorization.k8s.io
-s
+  # 「roleRef」はRole/ClusterRoleへのバインドを指定します
+  kind: ClusterRole #RoleまたはClusterRoleである必要があります
+  name: mc-api-clusterrole # これはバインドしたいRole名またはClusterRole名とマッチする必要があります
+
+
+
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRoleBinding
+# metadata:
+#   creationTimestamp: "2023-10-14T12:17:24Z"
+#   name: mc-c
+#   resourceVersion: "324775"
+#   uid: c6218a0d-0a6a-4396-abc0-bf9d05219cbd
+# roleRef:
+#   apiGroup: rbac.authorization.k8s.io
+#   kind: ClusterRole
+#   name: mc-api-clusterrole
+# subjects:
+# - kind: ServiceAccount
+#   name: default
+#   namespace: default
+# kubectl create clusterrolebinding mc-c \
+#   --clusterrole=mc-api-clusterrole  \
+#   --serviceaccount=default:default -o yaml
