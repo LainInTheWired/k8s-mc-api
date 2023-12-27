@@ -18,7 +18,7 @@ spec:
         app: mc-api
     spec:
       containers:
-      - image: soyokaze0125/mc-api-x86:v1
+      - image: soyokaze0125/mc-api-x86:v1.3
         imagePullPolicy: Always
         name: mc-api
         resources: {}
